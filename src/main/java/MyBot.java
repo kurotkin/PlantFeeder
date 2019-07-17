@@ -1,12 +1,8 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.io.File;
-import java.io.IOException;
 
 public class MyBot extends TelegramLongPollingBot {
 
@@ -35,28 +31,12 @@ public class MyBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            File file = new File(getClass().getClassLoader().getResource("secret.json").getFile());
-            Secret secret = objectMapper.readValue(file, Secret.class);
-            return secret.getName();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Secret.getSecret().getName();
     }
 
     @Override
     public String getBotToken() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            File file = new File(getClass().getClassLoader().getResource("secret.json").getFile());
-            Secret secret = objectMapper.readValue(file, Secret.class);
-            return secret.getToken();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Secret.getSecret().getToken();
     }
 
 }

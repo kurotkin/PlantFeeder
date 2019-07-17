@@ -1,23 +1,54 @@
-public class Secret {
-    public String name;
-    public String token;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    public Secret() {
+import java.io.File;
+import java.io.IOException;
+
+public class Secret {
+
+    private static volatile Secret secret;
+    private SecretJson secretJson;
+
+    private Secret(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            File file = new File(getClass().getClassLoader().getResource("secret.json").getFile());
+            secretJson = objectMapper.readValue(file, SecretJson.class);
+            System.out.println("Read config: " + secretJson.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Secret getSecret(){
+        if(secret == null){
+            synchronized (Secret.class){
+                if(secret == null) secret = new Secret();
+            }
+        }
+        return secret;
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return secretJson.name;
     }
 
     public String getToken() {
-        return token;
+        return secretJson.token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public String getHost() {
+        return secretJson.host;
+    }
+
+    public int getPort() {
+        return secretJson.port;
+    }
+
+    public String getUser() {
+        return secretJson.user;
+    }
+
+    public String getPass() {
+        return secretJson.pass;
     }
 }

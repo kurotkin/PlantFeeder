@@ -10,25 +10,13 @@ import java.net.PasswordAuthentication;
 
 public class Main {
     public static void main(String[] args) {
-        bot2();
-    }
-
-    private static void bot1(){
-        ApiContextInitializer.init();
-        TelegramBotsApi botsApi = new TelegramBotsApi();
-        try {
-            botsApi.registerBot(new MyBot());
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void bot2(){
         try {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("mtpro_xyz", "mtpro_xyz_bot".toCharArray());
+                    return new PasswordAuthentication(
+                            Secret.getSecret().getUser(),
+                            Secret.getSecret().getPass().toCharArray());
                 }
             });
 
@@ -40,8 +28,8 @@ public class Main {
             // Set up Http proxy
             DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
 
-            botOptions.setProxyHost("exp1.s5overss.mtpro.xyz");
-            botOptions.setProxyPort(39610);
+            botOptions.setProxyHost(Secret.getSecret().getHost());
+            botOptions.setProxyPort(Secret.getSecret().getPort());
 
             // Select proxy type: [HTTP|SOCKS4|SOCKS5] (default: NO_PROXY)
             botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
@@ -55,4 +43,5 @@ public class Main {
             e.printStackTrace();
         }
     }
+
 }
